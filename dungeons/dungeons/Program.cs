@@ -30,9 +30,17 @@
 
             int[] positions = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             
+            void clearlist(int[] list)
+            {
+                for (int i = 0; i < list.Count(); i++)
+                {
+                    list[i] = 0;
+                }
+            }
 
             while (true)
             {
+                clearlist(positions);
                 if (Console.KeyAvailable)
                 {
                     var input = Console.ReadKey(true);
@@ -57,7 +65,7 @@
                 foreach (enemy meanie in enemylist)
                 {
                     positions[meanie.pos] = meanie.health;
-                    if (meanie.health == 0) enemylist.Remove(meanie);
+                    if (meanie.health <= 0) enemylist.Remove(meanie);
                 }
                 for (int i = 0; i < positions.Count(); i++)
                 {
