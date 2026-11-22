@@ -1,11 +1,11 @@
 ﻿namespace dungeons
 {
-    class enemy
+    class card
     {
         public int pos;
         public int health;
         public int damage;
-        public enemy(int pos, int health, int damage)
+        public card(int pos, int health, int damage)
         {
             this.pos = pos;
             this.health = health;
@@ -20,61 +20,64 @@
         {
             Console.CursorVisible = false;
 
-            int pos = 1;
-            int health = 100;
-            int damage = 1;
 
-            List<enemy> enemylist = new List<enemy>();
-            enemylist.Add(new enemy(4, 5, 5));
-            enemylist.Add(new enemy(4, 5, 20));
+            int selected = 1;
 
-            int[] positions = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            
-            void clearlist(int[] list)
+            List<card> playerside = new List<card>();
+            List<card> enemyside = new List<card>();
+
+            void initlist(List<card> list)
             {
-                for (int i = 0; i < list.Count(); i++)
+                for (int i = 0; i < 4; i++)
                 {
-                    list[i] = 0;
+                    list.Add(new card(0,0,0));
                 }
             }
+            
+            initlist(playerside);
+            initlist(enemyside);
+
+            playerside[0] = new card(0, 1, 1);
+            enemyside[0] = new card(0, 1, 1);
 
             while (true)
             {
-                clearlist(positions);
                 if (Console.KeyAvailable)
                 {
                     var input = Console.ReadKey(true);
 
 
-                    if (input.Key == ConsoleKey.A) pos--;
-                    if (input.Key == ConsoleKey.D) pos++;
-                    
-                    foreach (enemy meanie in enemylist)
-                    {
-                        if (input.Key == ConsoleKey.Z) meanie.pos--;
-                        if (input.Key == ConsoleKey.C) meanie.pos++;
+                    if (input.Key == ConsoleKey.A) selected--;
+                    if (input.Key == ConsoleKey.D) selected++;
 
-                        if (input.Key == ConsoleKey.Spacebar && pos == meanie.pos) meanie.health -= damage;
+
+                    if (input.Key == ConsoleKey.Spacebar)
+                    {
+                        for (int i = 0; i < playerside.Count(); i++)
+                        {
+                            playerside[i].health -= enemyside[i].damage;
+
+                        }
                     }
+
                 }
 
                 Console.SetCursorPosition(1,1);
-                Console.Write(pos + 1);
-                Console.SetCursorPosition(3, 1);
-                Console.Write(health);
-                foreach (enemy meanie in enemylist)
+                Console.Write(selected + 1);
+
+
+                for (int i = 0; i < playerside.Count(); i++)
                 {
-                    positions[meanie.pos] = meanie.health;
-                    if (meanie.health <= 0) enemylist.Remove(meanie);
-                }
-                for (int i = 0; i < positions.Count(); i++)
-                {
-                    if (i == pos) Console.ForegroundColor = ConsoleColor.Blue;
+
+                    if (i == selected) Console.ForegroundColor = ConsoleColor.Blue;
                     else Console.ForegroundColor = ConsoleColor.White;
 
+                    Console.SetCursorPosition(i, 10);
+                    Console.Write(playerside[i].health);
                     Console.SetCursorPosition(i, 12);
-                    Console.Write(positions[i]);
+                    Console.Write(enemyside[i].health);
                 }
+
             }
 
             
