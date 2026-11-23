@@ -5,11 +5,13 @@
         public int pos;
         public int health;
         public int damage;
-        public card(int pos, int health, int damage)
+        public int blood;
+        public card(int pos, int health, int damage, int blood)
         {
             this.pos = pos;
             this.health = health;
             this.damage = damage;
+            this.blood = blood;
         }
     }
 
@@ -23,28 +25,31 @@
             int boardselected = 1;
             int handselected = 1;
             int scale = 0;
+            int bloodtemporary = 0;
 
+            List<card> cardsonplayerside = new();
+            List<card> cardsonenemyside = new();
 
-            List<card> cardsonplayerside = new List<card>();
-            List<card> cardsonenemyside = new List<card>();
+            List<card> playerside = new();
+            List<card> enemyside = new();
 
-            List<card> playerside = new List<card>();
-            List<card> enemyside = new List<card>();
-
-            List<card> deck = new List<card>();
-            deck.Add(new card(0, 1, 1));
-            deck.Add(new card(0, 2, 1));
-            deck.Add(new card(0, 3, 4));
-            deck.Add(new card(0, 4, 4));
-            deck.Add(new card(0, 5, 1));
-            List<card> hand = new List<card>();
+            List<card> deck = new();
+            deck.Add(new card(0, 1, 8, 1));
+            deck.Add(new card(0, 2, 7, 1));
+            deck.Add(new card(0, 3, 6, 1));
+            deck.Add(new card(0, 4, 5, 1));
+            deck.Add(new card(0, 5, 4, 1));
+            deck.Add(new card(0, 6, 3, 1));
+            deck.Add(new card(0, 7, 2, 1));
+            deck.Add(new card(0, 8, 1, 1));
+            List<card> hand = new();
 
 
             void initlist(List<card> list)
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    list.Add(new card(0, 0, 0));
+                    list.Add(new card(0, 0, 0, 0));
                 }
             }
             
@@ -56,7 +61,7 @@
                 for (int i = 0; i < 4; i++)
                 {
                     int cardindex = rnd.Next(0, deck.Count());
-                    hand.Add(new card(deck[cardindex].pos, deck[cardindex].health, deck[cardindex].damage));
+                    hand.Add(new card(deck[cardindex].pos, deck[cardindex].health, deck[cardindex].damage, deck[cardindex].blood));
                     deck.RemoveAt(cardindex);
                 }
             }
@@ -68,7 +73,10 @@
                 for (int i = 0; i < cardsonplayerside.Count; i++)
                 {
                     playerside[cardsonplayerside[i].pos] = cardsonplayerside[i];
-                    if (cardsonplayerside[i].health <= 0) cardsonplayerside.RemoveAt(i);
+                    if (cardsonplayerside[i].health <= 0)
+                    {
+                        cardsonplayerside.RemoveAt(i);
+                    }
                 }
                 for (int i = 0; i < cardsonenemyside.Count; i++)
                 {
@@ -91,8 +99,12 @@
                     {
                         for (int i = 0; i < playerside.Count(); i++)
                         {
+                            if (enemyside[i].health > 0) enemyside[i].health -= playerside[i].damage;
+                            else if (enemyside[i].health <= 0) scale += playerside[i].damage; enemyside[i] = new card(0, 0, 0, 0);
+                            if (enemyside[i].health < 0) enemyside[i].health = 0;
+
                             if (playerside[i].health > 0) playerside[i].health -= enemyside[i].damage;
-                            else if (playerside[i].health <= 0) scale -= enemyside[i].damage; playerside[i] = new card(0, 0, 0);
+                            else if (playerside[i].health <= 0) scale -= enemyside[i].damage; playerside[i] = new card(0, 0, 0, 0);
                             if (playerside[i].health < 0) playerside[i].health = 0;
                         }
                     }
@@ -101,21 +113,35 @@
                     
                     if (input.Key == ConsoleKey.D1)
                     {
-                        cardsonplayerside.Add(new card(boardselected, hand[handselected].damage, hand[handselected].health));
+                        cardsonplayerside.Add(new card(boardselected, hand[handselected].damage, hand[handselected].health, hand[handselected].blood));
                         hand.RemoveAt(handselected);
+
+                        for (int i = 0; i < hand.Count() + 1; i++)
+                        {
+                            for (int j = 0; j < 3; j++)
+                            {
+                                Console.Write(" ");
+                                Console.SetCursorPosition(i, 4 + j);
+                            }
+                        }
                     }
-
-
                     if (input.Key == ConsoleKey.D2)
                     {
-                        cardsonenemyside.Add(new card(boardselected, 1, 1));
+                        cardsonenemyside.Add(new card(boardselected, 1, 1, 1));
                     }
 
-
-
-
-
-
+                    if (input.Key == ConsoleKey.R)
+                    {
+                        drawhand(deck, hand);
+                        for (int i = 0; i < deck.Count() + 4; i++)
+                        {
+                            for (int j = 0; j < 2; j++)
+                            {
+                                Console.Write(" ");
+                                Console.SetCursorPosition(i, 6 + j);
+                            }
+                        }
+                    }
                 }
 
                 Console.SetCursorPosition(1,1);
@@ -127,8 +153,6 @@
 
                 for (int i = 0; i < playerside.Count(); i++)
                 {
-
-
                     if (i == boardselected) Console.ForegroundColor = ConsoleColor.Blue;
                     else Console.ForegroundColor = ConsoleColor.White;
 
@@ -164,11 +188,17 @@
                     Console.WriteLine(deck[i].damage);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                if (scale <= -5) break;
-
+                if (scale <= -5)
+                {
+                    Console.SetCursorPosition(0, 0);
+                    Console.WriteLine("You Lost"); break;
+                }
+                if (scale >= 5)
+                {
+                    Console.SetCursorPosition(0, 0);
+                    Console.WriteLine("you Win!!!"); break;
+                }
             }
-            Console.SetCursorPosition (0,0);
-            Console.WriteLine("youlost");
         }
     }
 }
