@@ -27,9 +27,11 @@
             int scale = 0;
             int bloodtemporary = 0;
 
+
+
+
             List<card> cardsonplayerside = new();
             List<card> cardsonenemyside = new();
-
             List<card> playerside = new();
             List<card> enemyside = new();
 
@@ -149,23 +151,34 @@
                 Console.SetCursorPosition(1, 2);
                 Console.Write(scale);
                 Console.SetCursorPosition(1, 3);
-                Console.Write(cardsonplayerside.Count());
+                Console.Write(bloodtemporary);
 
                 for (int i = 0; i < playerside.Count(); i++)
                 {
                     if (i == boardselected) Console.ForegroundColor = ConsoleColor.Blue;
                     else Console.ForegroundColor = ConsoleColor.White;
-
-                    Console.SetCursorPosition(i, 11);
+                    Console.SetCursorPosition(i, 24);
                     Console.Write(playerside[i].health);
-                    Console.SetCursorPosition(i, 14);
-                    Console.Write(enemyside[i].health);
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.SetCursorPosition(i, 10);
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.SetCursorPosition(i, 25);
                     Console.Write(playerside[i].damage);
-                    Console.SetCursorPosition(i, 15);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.SetCursorPosition(i, 26);
+                    Console.Write(playerside[i].blood);
+                    Console.ForegroundColor = ConsoleColor.White;
+
+                    Console.SetCursorPosition(i, 20);
+                    Console.Write(enemyside[i].health);
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.SetCursorPosition(i, 21);
                     Console.Write(enemyside[i].damage);
                     Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.SetCursorPosition(i, 22);
+                    Console.Write(enemyside[i].blood);
+                    Console.ForegroundColor = ConsoleColor.White;
+
                 }
 
                 for (int i = 0; i < hand.Count; i++)
