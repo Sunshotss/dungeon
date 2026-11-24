@@ -27,7 +27,7 @@
             int scale = 0;
             int bloodtemporary = 0;
 
-            List<card> bloodtemporarycards = new();
+            List<int> bloodtemporarycards = new();
 
 
             List<card> cardsonplayerside = new();
@@ -36,14 +36,14 @@
             List<card> enemyside = new();
 
             List<card> deck = new();
-            deck.Add(new card(0, 1, 8, 1));
-            deck.Add(new card(0, 2, 7, 1));
-            deck.Add(new card(0, 3, 6, 1));
-            deck.Add(new card(0, 4, 5, 1));
+            deck.Add(new card(0, 1, 8, 0));
+            deck.Add(new card(0, 2, 7, 0));
+            deck.Add(new card(0, 3, 6, 0));
+            deck.Add(new card(0, 4, 5, 0));
             deck.Add(new card(0, 5, 4, 1));
-            deck.Add(new card(0, 6, 3, 1));
-            deck.Add(new card(0, 7, 2, 1));
-            deck.Add(new card(0, 8, 1, 1));
+            deck.Add(new card(0, 6, 3, 2));
+            deck.Add(new card(0, 7, 2, 3));
+            deck.Add(new card(0, 8, 1, 4));
             List<card> hand = new();
 
 
@@ -72,6 +72,8 @@
 
             while (true)
             {
+                if (handselected >= hand.Count()) handselected--;
+
                 for (int i = 0; i < cardsonplayerside.Count; i++)
                 {
                     playerside[cardsonplayerside[i].pos] = cardsonplayerside[i];
@@ -112,26 +114,64 @@
                     }
                     
                     
-                    
+                    //places card from hand
                     if (input.Key == ConsoleKey.D1)
                     {
-                        cardsonplayerside.Add(new card(boardselected, hand[handselected].damage, hand[handselected].health, hand[handselected].blood));
-                        hand.RemoveAt(handselected);
-
-                        for (int i = 0; i < hand.Count() + 1; i++)
+                        if (hand[handselected].blood <= bloodtemporary)
                         {
-                            for (int j = 0; j < 3; j++)
+                            cardsonplayerside.Add(new card(boardselected, hand[handselected].damage, hand[handselected].health, hand[handselected].blood));
+                            hand.RemoveAt(handselected);
+                            for (int i = 0; i < bloodtemporarycards.Count(); i++)
                             {
-                                Console.Write(" ");
-                                Console.SetCursorPosition(i, 4 + j);
+                                cardsonplayerside.RemoveAt(bloodtemporarycards[i]);
+                                playerside.RemoveAt(bloodtemporarycards[i]);
+                                //balances playerside out (I CANT CODE)
+                                playerside.Add(new card(0, 0, 0, 0));
+                                for (int j = 0; j < playerside.Count(); j++)
+                                {
+                                    Console.SetCursorPosition(j * 3 + 1, 25);
+                                    Console.Write(" ");
+                                    Console.SetCursorPosition(j * 3, 25);
+                                    Console.Write(" ");
+                                    Console.SetCursorPosition(j * 3 + 1, 24);
+                                    Console.Write(" ");
+                                }
+                            }
+                            bloodtemporarycards.Clear();
+                            for (int i = 0; i < hand.Count() + 1; i++)
+                            {
+                                for (int j = 0; j < 3; j++)
+                                {
+                                    Console.Write(" ");
+                                    Console.SetCursorPosition(i, 4 + j);
+                                }
                             }
                         }
+                        else
+                        {
+                            int color = rnd.Next(0,11);
+                            if (color == 1) Console.ForegroundColor = ConsoleColor.Red;
+                            else if (color == 2) Console.ForegroundColor = ConsoleColor.Blue;
+                            else if (color == 3) Console.ForegroundColor = ConsoleColor.Yellow;
+                            else if (color == 4) Console.ForegroundColor = ConsoleColor.Cyan;
+                            else if (color == 5) Console.ForegroundColor = ConsoleColor.DarkBlue;
+                            else if (color == 6) Console.ForegroundColor = ConsoleColor.DarkRed;
+                            else if (color == 7) Console.ForegroundColor = ConsoleColor.Green;
+                            else if (color == 8) Console.ForegroundColor = ConsoleColor.DarkGreen;
+                            else if (color == 9) Console.ForegroundColor = ConsoleColor.Magenta;
+                            else if (color == 10) Console.ForegroundColor = ConsoleColor.Gray;
+                            Console.SetCursorPosition(10,2);
+                            Console.Write("Need more blood!");
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
                     }
+                    //places card from hand
+                    //places enemy 1:1:1 (devtool)
                     if (input.Key == ConsoleKey.D2)
                     {
                         cardsonenemyside.Add(new card(boardselected, 1, 1, 1));
                     }
-
+                    //places enemy 1:1:1 (devtool)
                     if (input.Key == ConsoleKey.R)
                     {
                         drawhand(deck, hand);
@@ -147,40 +187,37 @@
 
                     if (input.Key == ConsoleKey.Z)
                     {
-                        bloodtemporary += playerside[boardselected].blood;
+                        bloodtemporary += 1;
+                        bloodtemporarycards.Add(playerside[boardselected].pos);
                     }
                 }
-
-                Console.SetCursorPosition(1,1);
-                Console.Write(boardselected + 1);
-                Console.SetCursorPosition(1, 2);
+                Console.SetCursorPosition(1, 1);
                 Console.Write(scale);
-                Console.SetCursorPosition(1, 3);
+                Console.SetCursorPosition(1, 2);
                 Console.Write(bloodtemporary);
 
                 for (int i = 0; i < playerside.Count(); i ++)
                 {
                     if (i == boardselected) Console.ForegroundColor = ConsoleColor.Blue;
-                    else Console.ForegroundColor = ConsoleColor.White;
+                    else Console.ForegroundColor = ConsoleColor.DarkGreen;
 
                     Console.SetCursorPosition(i * 3 + 1, 25);
                     Console.Write(playerside[i].health);
-                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.SetCursorPosition(i * 3, 25);
                     Console.Write(playerside[i].damage);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     Console.SetCursorPosition(i * 3 + 1, 24);
                     Console.Write(playerside[i].blood);
                     Console.ForegroundColor = ConsoleColor.White;
 
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.SetCursorPosition(i * 3 + 1, 21);
                     Console.Write(enemyside[i].health);
-                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.SetCursorPosition(i * 3, 21);
                     Console.Write(enemyside[i].damage);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     Console.SetCursorPosition(i * 3 + 1, 20);
                     Console.Write(enemyside[i].blood);
                     Console.ForegroundColor = ConsoleColor.White;
@@ -190,23 +227,20 @@
                 for (int i = 0; i < hand.Count; i++)
                 {
                     if (i == handselected) Console.ForegroundColor = ConsoleColor.Blue;
-                    else Console.ForegroundColor = ConsoleColor.White;
-                    Console.SetCursorPosition(i, 4);
-                    Console.WriteLine(hand[i].health);
+                    else Console.ForegroundColor = ConsoleColor.DarkGreen;
+
+                    Console.SetCursorPosition(i * 3 + 1, 4);
+                    Console.Write(hand[i].health);
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.SetCursorPosition(i, 5);
-                    Console.WriteLine(hand[i].damage);
+                    Console.SetCursorPosition(i * 3, 4);
+                    Console.Write(hand[i].damage);
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.SetCursorPosition(i * 3 + 1, 3);
+                    Console.Write(hand[i].blood);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                for (int i = 0; i < deck.Count; i++)
-                {
-                    Console.SetCursorPosition(i, 6);
-                    Console.WriteLine(deck[i].health);
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.SetCursorPosition(i, 7);
-                    Console.WriteLine(deck[i].damage);
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
+                Console.SetCursorPosition(0, 6);
+                Console.WriteLine(deck.Count());
                 if (scale <= -5)
                 {
                     Console.SetCursorPosition(0, 0);
