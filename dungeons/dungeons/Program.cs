@@ -15,7 +15,7 @@
         }
     }
 
-    internal class Program
+    class Program
     {
         static void Main(string[] args)
         {
@@ -158,30 +158,30 @@
                 Console.SetCursorPosition(1, 3);
                 Console.Write(bloodtemporary);
 
-                for (int i = 0; i < playerside.Count(); i += 2)
+                for (int i = 0; i < playerside.Count(); i ++)
                 {
                     if (i == boardselected) Console.ForegroundColor = ConsoleColor.Blue;
                     else Console.ForegroundColor = ConsoleColor.White;
 
-                    Console.SetCursorPosition(i + 1, 25);
+                    Console.SetCursorPosition(i * 3 + 1, 25);
                     Console.Write(playerside[i].health);
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.SetCursorPosition(i, 25);
+                    Console.SetCursorPosition(i * 3, 25);
                     Console.Write(playerside[i].damage);
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.SetCursorPosition(i + 1, 24);
+                    Console.SetCursorPosition(i * 3 + 1, 24);
                     Console.Write(playerside[i].blood);
                     Console.ForegroundColor = ConsoleColor.White;
 
-                    Console.SetCursorPosition(i + 1, 21);
+                    Console.SetCursorPosition(i * 3 + 1, 21);
                     Console.Write(enemyside[i].health);
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.SetCursorPosition(i, 21);
+                    Console.SetCursorPosition(i * 3, 21);
                     Console.Write(enemyside[i].damage);
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.SetCursorPosition(i + 1, 20);
+                    Console.SetCursorPosition(i * 3 + 1, 20);
                     Console.Write(enemyside[i].blood);
                     Console.ForegroundColor = ConsoleColor.White;
 
