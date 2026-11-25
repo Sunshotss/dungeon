@@ -6,6 +6,7 @@
         public int health;
         public int damage;
         public int blood;
+        public bool dead = false;
         public card(int pos, int health, int damage, int blood)
         {
             this.pos = pos;
@@ -103,14 +104,17 @@
                     {
                         for (int i = 0; i < playerside.Count(); i++)
                         {
-                            if (enemyside[i].health > 0) enemyside[i].health -= playerside[i].damage;
-                            else if (enemyside[i].health <= 0) scale += playerside[i].damage; enemyside[i] = new card(0, 0, 0, 0);
-                            if (enemyside[i].health < 0) enemyside[i].health = 0;
+                            if (!enemyside[i].dead)enemyside[i].health -= playerside[i].damage;
+                            if (enemyside[i].health <= 0) enemyside[i].health = 0;
+                            if (enemyside[i].dead) scale += playerside[i].damage; enemyside[i] = new card(0, 0, 0, 0);
 
-                            if (playerside[i].health > 0) playerside[i].health -= enemyside[i].damage;
-                            else if (playerside[i].health <= 0) scale -= enemyside[i].damage; playerside[i] = new card(0, 0, 0, 0);
-                            if (playerside[i].health < 0) playerside[i].health = 0;
+                            playerside[i].health -= enemyside[i].damage;
+                            if (playerside[i].health <= 0) scale -= enemyside[i].damage; playerside[i] = new card(0, 0, 0, 0);
+
+
+                            if (enemyside[i].health <= 0) enemyside[i].dead = true;
                         }
+                    
                     }
                     
                     
@@ -138,12 +142,12 @@
                                 }
                             }
                             bloodtemporarycards.Clear();
-                            for (int i = 0; i < hand.Count() + 1; i++)
+                            for (int i = 0; i < hand.Count() * 4 + 1; i++)
                             {
-                                for (int j = 0; j < 3; j++)
+                                for (int j = 0; j < 2; j++)
                                 {
                                     Console.Write(" ");
-                                    Console.SetCursorPosition(i, 4 + j);
+                                    Console.SetCursorPosition(i, 3 + j);
                                 }
                             }
                         }
