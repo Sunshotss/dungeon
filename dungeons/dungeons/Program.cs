@@ -1,4 +1,6 @@
-﻿namespace dungeons
+﻿using System.ComponentModel.Design;
+
+namespace dungeons
 {
     class card
     {
@@ -6,7 +8,6 @@
         public int health;
         public int damage;
         public int blood;
-        public bool dead = false;
         public card(int pos, int health, int damage, int blood)
         {
             this.pos = pos;
@@ -104,15 +105,8 @@
                     {
                         for (int i = 0; i < playerside.Count(); i++)
                         {
-                            if (!enemyside[i].dead)enemyside[i].health -= playerside[i].damage;
-                            if (enemyside[i].health <= 0) enemyside[i].health = 0;
-                            if (enemyside[i].dead) scale += playerside[i].damage; enemyside[i] = new card(0, 0, 0, 0);
-
-                            playerside[i].health -= enemyside[i].damage;
-                            if (playerside[i].health <= 0) scale -= enemyside[i].damage; playerside[i] = new card(0, 0, 0, 0);
-
-
-                            if (enemyside[i].health <= 0) enemyside[i].dead = true;
+                            if (enemyside[i].health < 0) enemyside[i].health -= playerside[i].damage;
+                            else scale -= playerside[i].damage;
                         }
                     
                     }
